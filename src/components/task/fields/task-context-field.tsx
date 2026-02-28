@@ -29,7 +29,7 @@ export const TaskContextField = ({
           render={({ field }) => (
             <Textarea
               {...field}
-              placeholder='Enter your message'
+              placeholder='Write about task'
               maxLength={MAX_CHARACTERS}
               onChange={e => {
                 field.onChange(e.currentTarget.value.slice(0, MAX_CHARACTERS));

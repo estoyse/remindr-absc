@@ -96,7 +96,7 @@ export const RoutineFields = ({
                       value={field.value as string}
                       onBlur={field.onBlur}
                       ref={field.ref}
-                      placeholder='Enter your message'
+                      placeholder='Routine name'
                       maxLength={MAX_CHARACTERS}
                       onChange={e => {
                         field.onChange(
