@@ -1,6 +1,6 @@
 import { Controller, type Control } from "react-hook-form";
 import { Field, Portal, Select } from "@chakra-ui/react";
-import { frameworks } from "../../../data/mock-data";
+import { subjects } from "../../../data/mock-data";
 import { type TaskFormValues } from "../../../types";
 
 interface SubjectSelectProps {
@@ -13,19 +13,19 @@ export const SubjectSelect = ({ control }: SubjectSelectProps) => {
       <Field.Label>Указать тему</Field.Label>
       <Field.RequiredIndicator />
       <Controller
-        name='subject'
+        name="subject"
         control={control}
         render={({ field }) => (
           <Select.Root
             multiple
-            collection={frameworks}
+            collection={subjects}
             value={field.value}
-            onValueChange={e => field.onChange(e.value)}
+            onValueChange={(e) => field.onChange(e.value)}
           >
             <Select.HiddenSelect />
             <Select.Control>
               <Select.Trigger>
-                <Select.ValueText placeholder='Выберите тему' />
+                <Select.ValueText placeholder="Выберите тему" />
               </Select.Trigger>
               <Select.IndicatorGroup>
                 <Select.Indicator />
@@ -34,7 +34,7 @@ export const SubjectSelect = ({ control }: SubjectSelectProps) => {
             <Portal>
               <Select.Positioner>
                 <Select.Content>
-                  {frameworks.items.map(framework => (
+                  {subjects.items.map((framework) => (
                     <Select.Item item={framework} key={framework.value}>
                       {framework.label}
                       <Select.ItemIndicator />

@@ -10,34 +10,47 @@ export const frameworks = createListCollection<SelectItem>({
   ],
 });
 
+export const subjects = createListCollection<SelectItem>({
+  items: [
+    { label: "Meeting / Совещание", value: "meeting" },
+    { label: "Development / Разработка", value: "development" },
+    { label: "Research / Исследование", value: "research" },
+    { label: "Planning / Планирование", value: "planning" },
+    { label: "Administrative / Администрирование", value: "admin" },
+    { label: "Reporting / Отчетность", value: "reporting" },
+    { label: "Support / Поддержка", value: "support" },
+    { label: "Urgent / Срочно", value: "urgent" },
+  ],
+});
+
 export const tagsCollection = createListCollection<SelectItem>({
   items: [
-    { label: "Bug", value: "bug", colorPalette: "red" },
-    { label: "Feature", value: "feature", colorPalette: "green" },
-    { label: "Critical", value: "critical", colorPalette: "orange" },
-    { label: "Refactor", value: "refactor", colorPalette: "blue" },
-    { label: "UI", value: "ui", colorPalette: "pink" },
-    { label: "Backend", value: "backend", colorPalette: "purple" },
-    { label: "Documentation", value: "docs", colorPalette: "teal" },
+    { label: "Ошибка", value: "bug", colorPalette: "red" },
+    { label: "Новая функция", value: "feature", colorPalette: "green" },
+    { label: "Критично", value: "critical", colorPalette: "orange" },
+    { label: "Рефакторинг", value: "refactor", colorPalette: "blue" },
+    { label: "Интерфейс", value: "ui", colorPalette: "pink" },
+    { label: "Бэкенд", value: "backend", colorPalette: "purple" },
+    { label: "Документация", value: "docs", colorPalette: "teal" },
   ],
 });
 
 export const groupCollection = createListCollection<SelectItem>({
   items: [
-    { label: "Engineering", value: "eng", colorPalette: "blue" },
-    { label: "Design", value: "design", colorPalette: "pink" },
-    { label: "Product", value: "product", colorPalette: "purple" },
-    { label: "Marketing", value: "marketing", colorPalette: "orange" },
+    { label: "Разработка", value: "eng", colorPalette: "blue" },
+    { label: "Дизайн", value: "design", colorPalette: "pink" },
+    { label: "Продукт", value: "product", colorPalette: "purple" },
+    { label: "Маркетинг", value: "marketing", colorPalette: "orange" },
     { label: "HR", value: "hr", colorPalette: "red" },
   ],
 });
 
 export const periodCollection = createListCollection<SelectItem>({
   items: [
-    { label: "Hourly", value: "hourly" },
-    { label: "Daily", value: "daily" },
-    { label: "Weekly", value: "weekly" },
-    { label: "Monthly", value: "monthly" },
-    { label: "Annually", value: "annually" },
+    { label: "Почасово", value: "hourly" },
+    { label: "Ежедневно", value: "daily" },
+    { label: "Еженедельно", value: "weekly" },
+    { label: "Ежемесячно", value: "monthly" },
+    { label: "Ежегодно", value: "annually" },
   ],
 });

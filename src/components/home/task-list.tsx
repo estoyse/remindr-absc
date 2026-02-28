@@ -122,7 +122,7 @@ export const TaskList = ({ search }: TaskListProps) => {
                               variant="outline"
                               colorPalette={currentTag?.colorPalette}
                             >
-                              {currentTag?.value}
+                              {currentTag?.label}
                             </Badge>
                           );
                         }}
