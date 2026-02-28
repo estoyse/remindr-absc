@@ -13,6 +13,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { TaskApi } from "../../api/api";
 import { LuCalendar, LuTag, LuFile, LuClock, LuTrash2 } from "react-icons/lu";
 import { toaster } from "../ui/toaster";
+import { tagsCollection } from "@/data/mock-data";
 
 interface TaskListProps {
   search?: string;
@@ -47,46 +48,46 @@ export const TaskList = ({ search }: TaskListProps) => {
     },
   });
 
-  const getPerformer = (id: string) => allPerformers?.find(p => p.id === id);
+  const getPerformer = (id: string) => allPerformers?.find((p) => p.id === id);
 
   if (tasksLoading) return <Text>Загрузка задач...</Text>;
   if (!tasks || tasks.length === 0)
     return (
-      <Text color='fg.muted'>
+      <Text color="fg.muted">
         {search ? "Задачи не найдены." : "Нет созданных задач."}
       </Text>
     );
 
   return (
-    <Stack gap='6' w='full'>
+    <Stack gap="6" w="full">
       <For each={tasks}>
-        {task => (
-          <Card.Root key={task.id} variant='outline' size='md'>
-            <Card.Body p='5'>
-              <Stack gap='4'>
-                <HStack justify='space-between' align='flex-start'>
-                  <Stack gap='1'>
-                    <Text fontWeight='bold' fontSize='xl' lineHeight='tight'>
+        {(task) => (
+          <Card.Root key={task.id} variant="outline" size="md">
+            <Card.Body p="5">
+              <Stack gap="4">
+                <HStack justify="space-between" align="flex-start">
+                  <Stack gap="1">
+                    <Text fontWeight="bold" fontSize="xl" lineHeight="tight">
                       {task.taskContext}
                     </Text>
                     {task.isRoutine && (
                       <Badge
-                        colorPalette='blue'
-                        variant='surface'
-                        size='md'
-                        w='fit-content'
+                        colorPalette="blue"
+                        variant="surface"
+                        size="md"
+                        w="fit-content"
                       >
                         Рутина: {task.routine.name} (
                         {task.routine.period.join(", ")})
                       </Badge>
                     )}
                   </Stack>
-                  <HStack gap='2'>
+                  <HStack gap="2">
                     <IconButton
-                      aria-label='Delete task'
-                      variant='ghost'
-                      colorPalette='red'
-                      size='sm'
+                      aria-label="Delete task"
+                      variant="ghost"
+                      colorPalette="red"
+                      size="sm"
                       loading={
                         deleteMutation.isPending &&
                         deleteMutation.variables === task.id
@@ -98,10 +99,10 @@ export const TaskList = ({ search }: TaskListProps) => {
                   </HStack>
                 </HStack>
 
-                <HStack gap='5' flexWrap='wrap'>
+                <HStack gap="5" flexWrap="wrap">
                   {task.deadlineDate && (
-                    <HStack gap='2' color='fg.muted' fontSize='sm'>
-                      <Icon as={LuCalendar} size='sm' />
+                    <HStack gap="2" color="fg.muted" fontSize="sm">
+                      <Icon as={LuCalendar} size="sm" />
                       <Text>
                         {task.deadlineDate} {task.deadlineTime}
                       </Text>
@@ -109,48 +110,56 @@ export const TaskList = ({ search }: TaskListProps) => {
                   )}
 
                   {task.tags.length > 0 && (
-                    <HStack gap='2' flexWrap='wrap'>
-                      <Icon as={LuTag} color='fg.muted' size='sm' />
+                    <HStack gap="2" flexWrap="wrap">
+                      <Icon as={LuTag} color="fg.muted" size="sm" />
                       <For each={task.tags}>
-                        {tag => (
-                          <Badge key={tag} size='sm' variant='outline'>
-                            {tag}
-                          </Badge>
-                        )}
+                        {(tag) => {
+                          const currentTag = getTag(tag);
+                          return (
+                            <Badge
+                              key={tag}
+                              size="sm"
+                              variant="outline"
+                              colorPalette={currentTag?.colorPalette}
+                            >
+                              {currentTag?.value}
+                            </Badge>
+                          );
+                        }}
                       </For>
                     </HStack>
                   )}
 
                   {task.files.length > 0 && (
-                    <HStack gap='2' color='fg.muted' fontSize='sm'>
-                      <Icon as={LuFile} size='sm' />
+                    <HStack gap="2" color="fg.muted" fontSize="sm">
+                      <Icon as={LuFile} size="sm" />
                       <Text>{task.files.length} файл(ов)</Text>
                     </HStack>
                   )}
                 </HStack>
 
-                <HStack gap='3' pt='2' justify='space-between' align='flex-end'>
-                  <HStack gap='3'>
+                <HStack gap="3" pt="2" justify="space-between" align="flex-end">
+                  <HStack gap="3">
                     {task.person.length > 0 && (
-                      <HStack gap='2'>
+                      <HStack gap="2">
                         <Text
-                          fontSize='sm'
-                          fontWeight='medium'
-                          color='fg.muted'
+                          fontSize="sm"
+                          fontWeight="medium"
+                          color="fg.muted"
                         >
                           Назначено:
                         </Text>
-                        <HStack gap='-1'>
+                        <HStack gap="-1">
                           <For each={task.person}>
-                            {id => {
+                            {(id) => {
                               const p = getPerformer(id);
                               return (
                                 <Avatar.Root
                                   key={id}
-                                  size='sm'
-                                  shape='rounded'
-                                  border='2px solid'
-                                  borderColor='bg.panel'
+                                  size="sm"
+                                  shape="rounded"
+                                  border="2px solid"
+                                  borderColor="bg.panel"
                                 >
                                   <Avatar.Image src={p?.avatar} alt={p?.name} />
                                   <Avatar.Fallback name={p?.name || id} />
@@ -162,23 +171,23 @@ export const TaskList = ({ search }: TaskListProps) => {
                       </HStack>
                     )}
                     {task.group.length > 0 && (
-                      <HStack gap='2'>
+                      <HStack gap="2">
                         <Text
-                          fontSize='sm'
-                          fontWeight='medium'
-                          color='fg.muted'
+                          fontSize="sm"
+                          fontWeight="medium"
+                          color="fg.muted"
                         >
                           Команды:
                         </Text>
                         <For each={task.group}>
-                          {id => {
+                          {(id) => {
                             const p = getPerformer(id);
                             return (
                               <Badge
                                 key={id}
-                                size='md'
-                                colorPalette='green'
-                                variant='solid'
+                                size="md"
+                                colorPalette="green"
+                                variant="solid"
                               >
                                 {p?.name || id}
                               </Badge>
@@ -189,12 +198,12 @@ export const TaskList = ({ search }: TaskListProps) => {
                     )}
                   </HStack>
                   <HStack
-                    gap='1'
-                    color='fg.subtle'
-                    fontSize='xs'
-                    fontStyle='italic'
+                    gap="1"
+                    color="fg.subtle"
+                    fontSize="xs"
+                    fontStyle="italic"
                   >
-                    <Icon as={LuClock} size='xs' />
+                    <Icon as={LuClock} size="xs" />
                     <Text>
                       {new Date(task.createdAt).toLocaleString([], {
                         dateStyle: "short",
@@ -210,4 +219,8 @@ export const TaskList = ({ search }: TaskListProps) => {
       </For>
     </Stack>
   );
+};
+
+const getTag = (value: string) => {
+  return tagsCollection.items.find((item) => item.value === value);
 };
