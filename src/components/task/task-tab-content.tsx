@@ -19,7 +19,7 @@ interface TaskTabContentProps {
   onSuccess?: () => void;
 }
 
-export const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
+const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -122,3 +122,5 @@ export const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
     </Tabs.Content>
   );
 };
+
+export default TaskTabContent;

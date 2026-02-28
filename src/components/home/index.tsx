@@ -1,3 +1,4 @@
+import { lazy, useState } from "react";
 import {
   Button,
   Container,
@@ -12,11 +13,9 @@ import {
 import { FaTasks } from "react-icons/fa";
 import { LuX, LuPlus } from "react-icons/lu";
 import { MdTaskAlt } from "react-icons/md";
-import { TaskTabContent } from "../task/task-tab-content";
-import { ReminderTabContent } from "../task/reminder-tab-content";
+const TaskTabContent = lazy(() => import("../task/task-tab-content"));
+const ReminderTabContent = lazy(() => import("../task/reminder-tab-content"));
 import { TaskList } from "./task-list";
-
-import { useState } from "react";
 
 export default function Home() {
   const [open, setOpen] = useState(false);

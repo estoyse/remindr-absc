@@ -5,4 +5,15 @@ import tsconfigPaths from "vite-tsconfig-paths";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom"],
+          chakra: ["@chakra-ui/react"],
+          query: ["@tanstack/react-query"],
+        },
+      },
+    },
+  },
 });
