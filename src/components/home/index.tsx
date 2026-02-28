@@ -9,17 +9,22 @@ import {
   Portal,
   Stack,
   Tabs,
+  Input,
+  InputGroup,
 } from "@chakra-ui/react";
 import { FaTasks } from "react-icons/fa";
-import { LuX, LuPlus } from "react-icons/lu";
+import { LuX, LuPlus, LuSearch } from "react-icons/lu";
 import { MdTaskAlt } from "react-icons/md";
 import { TaskList } from "./task-list";
+import { useDebounce } from "../../hooks/use-debounce";
 
 import TaskTabContent from "../task/task-tab-content";
 import ReminderTabContent from "../task/reminder-tab-content";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const debouncedSearchValue = useDebounce(searchValue, 1000);
 
   return (
     <Container maxW='md' py='8'>
@@ -69,7 +74,21 @@ export default function Home() {
           </Dialog.Root>
         </HStack>
 
-        <TaskList />
+        <Stack gap='4'>
+          <InputGroup
+            startElement={<Icon as={LuSearch} color='fg.muted' />}
+            w='full'
+          >
+            <Input
+              placeholder='Поиск задач...'
+              value={searchValue}
+              onChange={e => setSearchValue(e.target.value)}
+              variant='subtle'
+              size='lg'
+            />
+          </InputGroup>
+          <TaskList search={debouncedSearchValue} />
+        </Stack>
       </Stack>
     </Container>
   );

@@ -127,10 +127,23 @@ export const TaskApi = {
     return { success: true, task: newTask };
   },
 
-  getTasks: async (): Promise<StoredTask[]> => {
-    await sleep(500);
+  getTasks: async (search?: string): Promise<StoredTask[]> => {
+    await sleep(1000);
     const existingTasksJson = localStorage.getItem("remindr_tasks");
-    return existingTasksJson ? JSON.parse(existingTasksJson) : [];
+    const tasks: StoredTask[] = existingTasksJson
+      ? JSON.parse(existingTasksJson)
+      : [];
+
+    if (!search) {
+      return tasks;
+    }
+
+    const normalizedSearch = search.toLowerCase();
+    return tasks.filter(
+      task =>
+        task.taskContext.toLowerCase().includes(normalizedSearch) ||
+        task.routine.name.toLowerCase().includes(normalizedSearch)
+    );
   },
 
   getAllPerformers: async (): Promise<Performer[]> => {
@@ -138,7 +151,7 @@ export const TaskApi = {
   },
 
   deleteTask: async (id: string): Promise<{ success: boolean }> => {
-    await sleep(500);
+    await sleep(1000);
     const existingTasksJson = localStorage.getItem("remindr_tasks");
     if (!existingTasksJson) return { success: false };
 

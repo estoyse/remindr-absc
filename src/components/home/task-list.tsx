@@ -14,11 +14,15 @@ import { TaskApi } from "../../api/api";
 import { LuCalendar, LuTag, LuFile, LuClock, LuTrash2 } from "react-icons/lu";
 import { toaster } from "../ui/toaster";
 
-export const TaskList = () => {
+interface TaskListProps {
+  search?: string;
+}
+
+export const TaskList = ({ search }: TaskListProps) => {
   const queryClient = useQueryClient();
   const { data: tasks, isLoading: tasksLoading } = useQuery({
-    queryKey: ["tasks"],
-    queryFn: () => TaskApi.getTasks(),
+    queryKey: ["tasks", search],
+    queryFn: () => TaskApi.getTasks(search),
   });
 
   const { data: allPerformers } = useQuery({
@@ -45,9 +49,13 @@ export const TaskList = () => {
 
   const getPerformer = (id: string) => allPerformers?.find(p => p.id === id);
 
-  if (tasksLoading) return <Text>Loading tasks...</Text>;
+  if (tasksLoading) return <Text>Загрузка задач...</Text>;
   if (!tasks || tasks.length === 0)
-    return <Text color='fg.muted'>Нет созданных задач.</Text>;
+    return (
+      <Text color='fg.muted'>
+        {search ? "Задачи не найдены." : "Нет созданных задач."}
+      </Text>
+    );
 
   return (
     <Stack gap='6' w='full'>
@@ -68,7 +76,7 @@ export const TaskList = () => {
                         size='md'
                         w='fit-content'
                       >
-                        Routine: {task.routine.name} (
+                        Рутина: {task.routine.name} (
                         {task.routine.period.join(", ")})
                       </Badge>
                     )}
@@ -116,7 +124,7 @@ export const TaskList = () => {
                   {task.files.length > 0 && (
                     <HStack gap='2' color='fg.muted' fontSize='sm'>
                       <Icon as={LuFile} size='sm' />
-                      <Text>{task.files.length} file(s)</Text>
+                      <Text>{task.files.length} файл(ов)</Text>
                     </HStack>
                   )}
                 </HStack>
@@ -130,7 +138,7 @@ export const TaskList = () => {
                           fontWeight='medium'
                           color='fg.muted'
                         >
-                          Assigned to:
+                          Назначено:
                         </Text>
                         <HStack gap='-1'>
                           <For each={task.person}>
@@ -160,7 +168,7 @@ export const TaskList = () => {
                           fontWeight='medium'
                           color='fg.muted'
                         >
-                          Teams:
+                          Команды:
                         </Text>
                         <For each={task.group}>
                           {id => {
