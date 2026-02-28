@@ -1,8 +1,10 @@
+import { useState, useMemo } from "react";
 import {
   Avatar,
   Button,
   Checkbox,
   Collapsible,
+  Combobox,
   Field,
   FileUpload,
   Flex,
@@ -18,31 +20,89 @@ import {
   Textarea,
   type ListCollection,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { HiUpload } from "react-icons/hi";
 import { LuInfo } from "react-icons/lu";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import {
   frameworks,
   tagsCollection,
   groupCollection,
 } from "../../data/mock-data";
-import { MultiSelectValue } from "./multi-select-value";
+import {
+  MultiSelectValue,
+  ComboboxMultiSelectValue,
+} from "./multi-select-value";
 import { type SelectItem } from "../../data/types";
 
 interface TaskTabContentProps {
   userCollection: ListCollection<SelectItem>;
 }
 
+interface TaskFormValues {
+  taskContext: string;
+  attachToGroup: boolean;
+  isRoutine: boolean;
+  routineName: string;
+  period: string[];
+  routineDescription: string;
+  person: string[];
+  group: string[];
+  subject: string[];
+  tags: string[];
+  deadlineDate: string;
+  deadlineTime: string;
+  files: File[];
+}
+
 export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
-  const [checked, setChecked] = useState(true);
-  const [isRoutine, setIsRoutine] = useState(false);
-  const [taskContext, setTaskContext] = useState("");
-  const [taskName, setTaskName] = useState("");
   const MAX_CHARACTERS = 100;
+
+  const { control, handleSubmit } = useForm<TaskFormValues>({
+    defaultValues: {
+      taskContext: "",
+      attachToGroup: true,
+      isRoutine: false,
+      routineName: "",
+      period: [],
+      routineDescription: "",
+      person: [],
+      group: [],
+      subject: [],
+      tags: [],
+      deadlineDate: "",
+      deadlineTime: "",
+    },
+  });
+
+  const [personSearch, setPersonSearch] = useState("");
+  const [groupSearch, setGroupSearch] = useState("");
+
+  const filteredUserItems = useMemo(() => {
+    if (!personSearch) return userCollection.items;
+    return userCollection.items.filter(item =>
+      item.label.toLowerCase().includes(personSearch.toLowerCase())
+    );
+  }, [userCollection.items, personSearch]);
+
+  const filteredGroupItems = useMemo(() => {
+    if (!groupSearch) return groupCollection.items;
+    return groupCollection.items.filter(item =>
+      item.label.toLowerCase().includes(groupSearch.toLowerCase())
+    );
+  }, [groupSearch]);
+
+  const attachToGroup = useWatch({ control, name: "attachToGroup" });
+  const isRoutine = useWatch({ control, name: "isRoutine" });
+  const taskContext = useWatch({ control, name: "taskContext" }) || "";
+  const routineName = useWatch({ control, name: "routineName" }) || "";
+
+  const onSubmit = (data: TaskFormValues) => {
+    console.log("Form Data:", data);
+  };
 
   return (
     <Tabs.Content value='task'>
-      <Stack gap='4'>
+      <Stack gap='4' as='form' onSubmit={handleSubmit(onSubmit)}>
         <Field.Root>
           <Field.Label>Task Context</Field.Label>
           <Field.RequiredIndicator />
@@ -53,39 +113,61 @@ export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
               </Span>
             }
           >
-            <Textarea
-              placeholder='Enter your message'
-              value={taskContext}
-              maxLength={MAX_CHARACTERS}
-              onChange={e => {
-                setTaskContext(e.currentTarget.value.slice(0, MAX_CHARACTERS));
-              }}
+            <Controller
+              name='taskContext'
+              control={control}
+              render={({ field }) => (
+                <Textarea
+                  {...field}
+                  placeholder='Enter your message'
+                  maxLength={MAX_CHARACTERS}
+                  onChange={e => {
+                    field.onChange(
+                      e.currentTarget.value.slice(0, MAX_CHARACTERS)
+                    );
+                  }}
+                />
+              )}
             />
           </InputGroup>
         </Field.Root>
+
         <Flex direction='row' justify='space-between'>
-          <Switch.Root
-            checked={checked}
-            onCheckedChange={e => setChecked(e.checked)}
-          >
-            <Switch.HiddenInput />
-            <Switch.Control>
-              <Switch.Thumb />
-            </Switch.Control>
-            <Switch.Label>Attach to the group</Switch.Label>
-          </Switch.Root>
+          <Controller
+            name='attachToGroup'
+            control={control}
+            render={({ field }) => (
+              <Switch.Root
+                checked={field.value}
+                onCheckedChange={e => field.onChange(e.checked)}
+              >
+                <Switch.HiddenInput />
+                <Switch.Control>
+                  <Switch.Thumb />
+                </Switch.Control>
+                <Switch.Label>Attach to the group</Switch.Label>
+              </Switch.Root>
+            )}
+          />
           <Stack direction='row'>
-            <Checkbox.Root
-              checked={isRoutine}
-              onCheckedChange={e => setIsRoutine(!!e.checked)}
-            >
-              <Checkbox.HiddenInput />
-              <Checkbox.Control />
-              <Checkbox.Label>Routine Task</Checkbox.Label>
-            </Checkbox.Root>
+            <Controller
+              name='isRoutine'
+              control={control}
+              render={({ field }) => (
+                <Checkbox.Root
+                  checked={field.value}
+                  onCheckedChange={e => field.onChange(!!e.checked)}
+                >
+                  <Checkbox.HiddenInput />
+                  <Checkbox.Control />
+                  <Checkbox.Label>Routine Task</Checkbox.Label>
+                </Checkbox.Root>
+              )}
+            />
             <Icon as={LuInfo} size='md' />
           </Stack>
         </Flex>
+
         <Collapsible.Root open={isRoutine}>
           <Collapsible.Content>
             <Stack
@@ -101,30 +183,200 @@ export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
                 <InputGroup
                   endElement={
                     <Span color='fg.muted' textStyle='xs'>
-                      {taskName.length} / {MAX_CHARACTERS}
+                      {routineName.length} / {MAX_CHARACTERS}
                     </Span>
                   }
                 >
-                  <Input
-                    placeholder='Enter your message'
-                    value={taskName}
-                    maxLength={MAX_CHARACTERS}
-                    onChange={e => {
-                      setTaskName(
-                        e.currentTarget.value.slice(0, MAX_CHARACTERS)
-                      );
-                    }}
+                  <Controller
+                    name='routineName'
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        placeholder='Enter your message'
+                        maxLength={MAX_CHARACTERS}
+                        onChange={e => {
+                          field.onChange(
+                            e.currentTarget.value.slice(0, MAX_CHARACTERS)
+                          );
+                        }}
+                      />
+                    )}
                   />
                 </InputGroup>
               </Field.Root>
               <Field.Root>
                 <Field.Label>Period</Field.Label>
                 <Field.RequiredIndicator />
-                <Select.Root collection={frameworks}>
+                <Controller
+                  name='period'
+                  control={control}
+                  render={({ field }) => (
+                    <Select.Root
+                      collection={frameworks}
+                      value={field.value}
+                      onValueChange={e => field.onChange(e.value)}
+                    >
+                      <Select.HiddenSelect />
+                      <Select.Control>
+                        <Select.Trigger>
+                          <Select.ValueText placeholder='Select period' />
+                        </Select.Trigger>
+                        <Select.IndicatorGroup>
+                          <Select.Indicator />
+                        </Select.IndicatorGroup>
+                      </Select.Control>
+                      <Portal>
+                        <Select.Positioner>
+                          <Select.Content>
+                            {frameworks.items.map(framework => (
+                              <Select.Item
+                                item={framework}
+                                key={framework.value}
+                              >
+                                {framework.label}
+                                <Select.ItemIndicator />
+                              </Select.Item>
+                            ))}
+                          </Select.Content>
+                        </Select.Positioner>
+                      </Portal>
+                    </Select.Root>
+                  )}
+                />
+              </Field.Root>
+              <Field.Root>
+                <Field.Label>Description</Field.Label>
+                <Field.RequiredIndicator />
+                <Controller
+                  name='routineDescription'
+                  control={control}
+                  render={({ field }) => <Textarea {...field} />}
+                />
+              </Field.Root>
+            </Stack>
+          </Collapsible.Content>
+        </Collapsible.Root>
+
+        <Stack gap='4' pt='2'>
+          {attachToGroup ? (
+            <Field.Root key='group-select'>
+              <Field.Label>Group</Field.Label>
+              <Field.RequiredIndicator />
+              <Controller
+                name='group'
+                control={control}
+                render={({ field }) => (
+                  <Combobox.Root
+                    multiple
+                    collection={groupCollection}
+                    value={field.value}
+                    onValueChange={e => field.onChange(e.value)}
+                    inputValue={groupSearch}
+                    onInputValueChange={e => setGroupSearch(e.inputValue)}
+                    onOpenChange={e => {
+                      if (!e.open) setGroupSearch("");
+                    }}
+                  >
+                    <Combobox.Control>
+                      <Combobox.Input placeholder='Select group' />
+                      <Combobox.Trigger>
+                        <ComboboxMultiSelectValue showAvatar={false} />
+                      </Combobox.Trigger>
+                    </Combobox.Control>
+                    <Portal>
+                      <Combobox.Positioner>
+                        <Combobox.Content>
+                          {filteredGroupItems.map((item: SelectItem) => (
+                            <Combobox.Item
+                              item={item}
+                              key={item.value}
+                              justifyContent='flex-start'
+                            >
+                              {item.label}
+                              <Combobox.ItemIndicator />
+                            </Combobox.Item>
+                          ))}
+                        </Combobox.Content>
+                      </Combobox.Positioner>
+                    </Portal>
+                  </Combobox.Root>
+                )}
+              />
+            </Field.Root>
+          ) : (
+            <Field.Root key='person-select'>
+              <Field.Label>Person</Field.Label>
+              <Field.RequiredIndicator />
+              <Controller
+                name='person'
+                control={control}
+                render={({ field }) => (
+                  <Combobox.Root
+                    multiple
+                    collection={userCollection}
+                    value={field.value}
+                    onValueChange={e => field.onChange(e.value)}
+                    inputValue={personSearch}
+                    onInputValueChange={e => setPersonSearch(e.inputValue)}
+                    onOpenChange={e => {
+                      if (!e.open) setPersonSearch("");
+                    }}
+                  >
+                    <Combobox.Control>
+                      <Combobox.Input placeholder='Select person' />
+                      <Combobox.Trigger>
+                        <ComboboxMultiSelectValue showAvatar={true} />
+                      </Combobox.Trigger>
+                    </Combobox.Control>
+                    <Portal>
+                      <Combobox.Positioner>
+                        <Combobox.Content mt='2'>
+                          {filteredUserItems.map((item: SelectItem) => (
+                            <Combobox.Item
+                              item={item}
+                              key={item.value}
+                              justifyContent='flex-start'
+                            >
+                              {item.avatar && (
+                                <Avatar.Root shape='rounded' size='2xs'>
+                                  <Avatar.Image
+                                    src={item.avatar}
+                                    alt={item.label}
+                                  />
+                                  <Avatar.Fallback name={item.label} />
+                                </Avatar.Root>
+                              )}
+                              {item.label}
+                              <Combobox.ItemIndicator />
+                            </Combobox.Item>
+                          ))}
+                        </Combobox.Content>
+                      </Combobox.Positioner>
+                    </Portal>
+                  </Combobox.Root>
+                )}
+              />
+            </Field.Root>
+          )}
+
+          <Field.Root>
+            <Field.Label>Subject</Field.Label>
+            <Field.RequiredIndicator />
+            <Controller
+              name='subject'
+              control={control}
+              render={({ field }) => (
+                <Select.Root
+                  multiple
+                  collection={frameworks}
+                  value={field.value}
+                  onValueChange={e => field.onChange(e.value)}
+                >
                   <Select.HiddenSelect />
                   <Select.Control>
                     <Select.Trigger>
-                      <Select.ValueText placeholder='Select period' />
+                      <Select.ValueText placeholder='Select subject' />
                     </Select.Trigger>
                     <Select.IndicatorGroup>
                       <Select.Indicator />
@@ -143,150 +395,47 @@ export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
                     </Select.Positioner>
                   </Portal>
                 </Select.Root>
-              </Field.Root>
-              <Field.Root>
-                <Field.Label>Description</Field.Label>
-                <Field.RequiredIndicator />
-                <Textarea />
-              </Field.Root>
-            </Stack>
-          </Collapsible.Content>
-        </Collapsible.Root>
-
-        <Stack gap='4' pt='2'>
-          {checked ? (
-            <Field.Root key='group-select'>
-              <Field.Label>Group</Field.Label>
-              <Field.RequiredIndicator />
-              <Select.Root multiple collection={groupCollection}>
-                <Select.HiddenSelect />
-                <Select.Control>
-                  <Select.Trigger>
-                    <MultiSelectValue
-                      placeholder='Select group'
-                      showAvatar={false}
-                    />
-                  </Select.Trigger>
-                  <Select.IndicatorGroup>
-                    <Select.Indicator />
-                  </Select.IndicatorGroup>
-                </Select.Control>
-                <Portal>
-                  <Select.Positioner>
-                    <Select.Content>
-                      {groupCollection.items.map((item: SelectItem) => (
-                        <Select.Item
-                          item={item}
-                          key={item.value}
-                          justifyContent='flex-start'
-                        >
-                          {item.label}
-                          <Select.ItemIndicator />
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
-                  </Select.Positioner>
-                </Portal>
-              </Select.Root>
-            </Field.Root>
-          ) : (
-            <Field.Root key='person-select'>
-              <Field.Label>Person</Field.Label>
-              <Field.RequiredIndicator />
-              <Select.Root multiple collection={userCollection}>
-                <Select.HiddenSelect />
-                <Select.Control>
-                  <Select.Trigger>
-                    <MultiSelectValue
-                      placeholder='Select person'
-                      showAvatar={true}
-                    />
-                  </Select.Trigger>
-                  <Select.IndicatorGroup>
-                    <Select.Indicator />
-                  </Select.IndicatorGroup>
-                </Select.Control>
-                <Portal>
-                  <Select.Positioner>
-                    <Select.Content>
-                      {userCollection.items.map((item: SelectItem) => (
-                        <Select.Item
-                          item={item}
-                          key={item.value}
-                          justifyContent='flex-start'
-                        >
-                          {item.avatar && (
-                            <Avatar.Root shape='rounded' size='2xs'>
-                              <Avatar.Image
-                                src={item.avatar}
-                                alt={item.label}
-                              />
-                              <Avatar.Fallback name={item.label} />
-                            </Avatar.Root>
-                          )}
-                          {item.label}
-                          <Select.ItemIndicator />
-                        </Select.Item>
-                      ))}
-                    </Select.Content>
-                  </Select.Positioner>
-                </Portal>
-              </Select.Root>
-            </Field.Root>
-          )}
-          <Field.Root>
-            <Field.Label>Subject</Field.Label>
-            <Field.RequiredIndicator />
-            <Select.Root multiple collection={frameworks}>
-              <Select.HiddenSelect />
-              <Select.Control>
-                <Select.Trigger>
-                  <Select.ValueText placeholder='Select subject' />
-                </Select.Trigger>
-                <Select.IndicatorGroup>
-                  <Select.Indicator />
-                </Select.IndicatorGroup>
-              </Select.Control>
-              <Portal>
-                <Select.Positioner>
-                  <Select.Content>
-                    {frameworks.items.map(framework => (
-                      <Select.Item item={framework} key={framework.value}>
-                        {framework.label}
-                        <Select.ItemIndicator />
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Positioner>
-              </Portal>
-            </Select.Root>
+              )}
+            />
           </Field.Root>
+
           <Field.Root>
             <Field.Label>Tags</Field.Label>
             <Field.RequiredIndicator />
-            <Select.Root multiple collection={tagsCollection}>
-              <Select.HiddenSelect />
-              <Select.Control>
-                <Select.Trigger>
-                  <MultiSelectValue placeholder='Select tags' />
-                </Select.Trigger>
-                <Select.IndicatorGroup>
-                  <Select.Indicator />
-                </Select.IndicatorGroup>
-              </Select.Control>
-              <Portal>
-                <Select.Positioner>
-                  <Select.Content>
-                    {tagsCollection.items.map(tag => (
-                      <Select.Item item={tag} key={tag.value}>
-                        {tag.label}
-                        <Select.ItemIndicator />
-                      </Select.Item>
-                    ))}
-                  </Select.Content>
-                </Select.Positioner>
-              </Portal>
-            </Select.Root>
+            <Controller
+              name='tags'
+              control={control}
+              render={({ field }) => (
+                <Select.Root
+                  multiple
+                  collection={tagsCollection}
+                  value={field.value}
+                  onValueChange={e => field.onChange(e.value)}
+                >
+                  <Select.HiddenSelect />
+                  <Select.Control>
+                    <Select.Trigger>
+                      <MultiSelectValue placeholder='Select tags' />
+                    </Select.Trigger>
+                    <Select.IndicatorGroup>
+                      <Select.Indicator />
+                    </Select.IndicatorGroup>
+                  </Select.Control>
+                  <Portal>
+                    <Select.Positioner>
+                      <Select.Content>
+                        {tagsCollection.items.map(tag => (
+                          <Select.Item item={tag} key={tag.value}>
+                            {tag.label}
+                            <Select.ItemIndicator />
+                          </Select.Item>
+                        ))}
+                      </Select.Content>
+                    </Select.Positioner>
+                  </Portal>
+                </Select.Root>
+              )}
+            />
           </Field.Root>
         </Stack>
 
@@ -294,24 +443,43 @@ export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
           <Field.Label>Deadline</Field.Label>
           <Field.RequiredIndicator />
           <Stack direction='row' w='full'>
-            <Input type='date' />
-            <Input type='time' />
+            <Controller
+              name='deadlineDate'
+              control={control}
+              render={({ field }) => <Input type='date' {...field} />}
+            />
+            <Controller
+              name='deadlineTime'
+              control={control}
+              render={({ field }) => <Input type='time' {...field} />}
+            />
           </Stack>
         </Field.Root>
+
         <Field.Root>
           <Field.Label>File</Field.Label>
           <Field.RequiredIndicator />
-          <FileUpload.Root accept={["image/png"]}>
-            <FileUpload.HiddenInput />
-            <FileUpload.Trigger asChild>
-              <Button variant='outline' w='full'>
-                <HiUpload /> Upload file
-              </Button>
-            </FileUpload.Trigger>
-            <FileUpload.List />
-          </FileUpload.Root>
+          <Controller
+            name='files'
+            control={control}
+            render={({ field }) => (
+              <FileUpload.Root
+                accept={["image/png"]}
+                onFileChange={e => field.onChange(e.acceptedFiles)}
+              >
+                <FileUpload.HiddenInput />
+                <FileUpload.Trigger asChild>
+                  <Button variant='outline' w='full'>
+                    <HiUpload /> Upload file
+                  </Button>
+                </FileUpload.Trigger>
+                <FileUpload.List />
+              </FileUpload.Root>
+            )}
+          />
         </Field.Root>
-        <Button>Create task</Button>
+
+        <Button type='submit'>Create task</Button>
       </Stack>
     </Tabs.Content>
   );
