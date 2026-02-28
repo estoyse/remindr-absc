@@ -1,4 +1,4 @@
-import { lazy, useState } from "react";
+import { useState } from "react";
 import {
   Button,
   Container,
@@ -13,9 +13,10 @@ import {
 import { FaTasks } from "react-icons/fa";
 import { LuX, LuPlus } from "react-icons/lu";
 import { MdTaskAlt } from "react-icons/md";
-const TaskTabContent = lazy(() => import("../task/task-tab-content"));
-const ReminderTabContent = lazy(() => import("../task/reminder-tab-content"));
 import { TaskList } from "./task-list";
+
+import TaskTabContent from "../task/task-tab-content";
+import ReminderTabContent from "../task/reminder-tab-content";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -24,12 +25,12 @@ export default function Home() {
     <Container maxW='md' py='8'>
       <Stack gap='8'>
         <HStack justify='space-between' align='center'>
-          <Heading size='2xl'>My Tasks</Heading>
+          <Heading size='2xl'>Мои задачи</Heading>
           <Dialog.Root open={open} onOpenChange={e => setOpen(e.open)}>
             <Dialog.Trigger asChild>
               <Button rounded='full' size='lg'>
                 <Icon as={LuPlus} />
-                Create Task
+                Создать задачу
               </Button>
             </Dialog.Trigger>
             <Portal>
@@ -40,7 +41,7 @@ export default function Home() {
                     <Icon as={LuX} size='lg' />
                   </Dialog.CloseTrigger>
                   <Dialog.Header>
-                    <Dialog.Title>Create task</Dialog.Title>
+                    <Dialog.Title>Создание задачи</Dialog.Title>
                   </Dialog.Header>
                   <Dialog.Body pb='4'>
                     <Stack gap='4'>
@@ -48,11 +49,11 @@ export default function Home() {
                         <Tabs.List bg='bg.muted'>
                           <Tabs.Trigger value='task'>
                             <MdTaskAlt />
-                            Create task
+                            Создание задачи
                           </Tabs.Trigger>
                           <Tabs.Trigger value='reminder'>
                             <FaTasks />
-                            Create reminder
+                            Создание напоминания
                           </Tabs.Trigger>
                           <Tabs.Indicator />
                         </Tabs.List>
