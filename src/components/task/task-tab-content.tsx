@@ -100,7 +100,7 @@ const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
         </Stack>
         <DeadlineFields control={control} />
         <FileUploadField control={control} />
-        <Button type='submit' loading={isSubmitting} loadingText='Creating...'>
+        <Button type='submit' loading={isSubmitting} loadingText='Создание...'>
           Создать задачу
         </Button>
       </Stack>
