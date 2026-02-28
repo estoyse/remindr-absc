@@ -1,5 +1,5 @@
 import { createListCollection } from "@chakra-ui/react";
-import { type SelectItem } from "./types";
+import { type SelectItem } from "../types";
 
 export const frameworks = createListCollection<SelectItem>({
   items: [

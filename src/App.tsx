@@ -8,10 +8,12 @@ import {
   Tabs,
 } from "@chakra-ui/react";
 import { useEffect, useMemo, useState } from "react";
-import { LuFolder, LuUser, LuX } from "react-icons/lu";
+import { LuX } from "react-icons/lu";
 import { ReminderTabContent } from "./components/task/reminder-tab-content";
 import { TaskTabContent } from "./components/task/task-tab-content";
-import { type SelectItem } from "./data/types";
+import { type SelectItem } from "./types";
+import { MdTaskAlt } from "react-icons/md";
+import { FaTasks } from "react-icons/fa";
 
 function App() {
   const [users, setUsers] = useState<{ id: number; name: string }[]>([]);
@@ -52,11 +54,11 @@ function App() {
                 <Tabs.Root defaultValue='task' variant='plain' fitted>
                   <Tabs.List bg='bg.muted'>
                     <Tabs.Trigger value='task'>
-                      <LuUser />
+                      <MdTaskAlt />
                       Create task
                     </Tabs.Trigger>
                     <Tabs.Trigger value='reminder'>
-                      <LuFolder />
+                      <FaTasks />
                       Create reminder
                     </Tabs.Trigger>
                     <Tabs.Indicator />

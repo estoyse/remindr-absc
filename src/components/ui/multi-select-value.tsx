@@ -8,7 +8,7 @@ import {
   useComboboxContext,
 } from "@chakra-ui/react";
 import { HiX } from "react-icons/hi";
-import { type SelectItem } from "../../data/types";
+import { type SelectItem } from "../../types";
 
 interface MultiSelectProps {
   placeholder: string;
