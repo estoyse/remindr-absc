@@ -33,8 +33,8 @@ export const TaskList = ({ search }: TaskListProps) => {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => TaskApi.deleteTask(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
       toaster.create({
         title: "Task deleted",
         type: "success",
