@@ -28,3 +28,9 @@ export interface TaskFormValues {
   deadlineTime: string;
   files: File[];
 }
+
+export interface StoredTask extends Omit<TaskFormValues, "files"> {
+  id: string;
+  createdAt: string;
+  files: string[];
+}

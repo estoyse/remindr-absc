@@ -1,4 +1,4 @@
-import { type TaskFormValues } from "../types";
+import { type TaskFormValues, type StoredTask } from "../types";
 
 export interface Performer {
   id: string;
@@ -106,10 +106,35 @@ export const TaskApi = {
     );
   },
 
-  submitTask: async (data: TaskFormValues): Promise<{ success: boolean }> => {
-    console.log("Final Form Submission:", data);
+  submitTask: async (
+    data: TaskFormValues
+  ): Promise<{ success: boolean; task: StoredTask }> => {
     await sleep(1000);
-    return { success: true };
+
+    const newTask: StoredTask = {
+      ...data,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      files: data.files.map(f => `uploads/${f.name}`),
+    };
+
+    const existingTasksJson = localStorage.getItem("remindr_tasks");
+    const tasks = existingTasksJson ? JSON.parse(existingTasksJson) : [];
+    tasks.push(newTask);
+    localStorage.setItem("remindr_tasks", JSON.stringify(tasks));
+
+    console.log("Task saved to store:", newTask);
+    return { success: true, task: newTask };
+  },
+
+  getTasks: async (): Promise<StoredTask[]> => {
+    await sleep(500);
+    const existingTasksJson = localStorage.getItem("remindr_tasks");
+    return existingTasksJson ? JSON.parse(existingTasksJson) : [];
+  },
+
+  getAllPerformers: async (): Promise<Performer[]> => {
+    return [...MOCK_USERS, ...MOCK_TEAMS];
   },
 };
 

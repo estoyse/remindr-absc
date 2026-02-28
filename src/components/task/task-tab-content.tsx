@@ -1,6 +1,8 @@
 import { Button, Stack, Tabs } from "@chakra-ui/react";
 import { useForm, useWatch } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
 import { type TaskFormValues } from "../../types";
+import { TaskApi } from "../../api/api";
 
 import { TaskContextField } from "./fields/task-context-field";
 import { RoutineFields } from "./fields/routine-fields";
@@ -12,10 +14,11 @@ import { DeadlineFields } from "./fields/deadline-fields";
 import { FileUploadField } from "./fields/file-upload-field";
 
 export const TaskTabContent = () => {
-  const { control, handleSubmit } = useForm<TaskFormValues>({
+  const queryClient = useQueryClient();
+  const { control, handleSubmit, reset } = useForm<TaskFormValues>({
     defaultValues: {
       taskContext: "",
-      attachToGroup: true,
+      attachToGroup: false,
       isRoutine: false,
       routine: {
         name: "",
@@ -37,12 +40,23 @@ export const TaskTabContent = () => {
   const taskContext = useWatch({ control, name: "taskContext" }) || "";
   const routineName = useWatch({ control, name: "routine.name" }) || "";
 
-  const onSubmit = (data: TaskFormValues) => {
+  const onSubmit = async (data: TaskFormValues) => {
     const finalData = { ...data };
     if (!finalData.isRoutine) {
       finalData.routine = { name: "", period: [], description: "" };
     }
-    console.log("Form Data:", finalData);
+
+    try {
+      const result = await TaskApi.submitTask(finalData);
+      if (result.success) {
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
+        alert("Task created successfully!");
+        reset();
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+      alert("Failed to create task");
+    }
   };
 
   return (
