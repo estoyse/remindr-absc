@@ -1,4 +1,4 @@
-import { Controller, type Control } from "react-hook-form";
+import { Controller, type Control, useWatch } from "react-hook-form";
 import {
   Checkbox,
   Collapsible,
@@ -21,15 +21,12 @@ import { Tooltip } from "@/components/ui/tooltip";
 
 interface RoutineFieldsProps {
   control: Control<TaskFormValues>;
-  isRoutine: boolean;
-  routineNameLength: number;
 }
 
-export const RoutineFields = ({
-  control,
-  isRoutine,
-  routineNameLength,
-}: RoutineFieldsProps) => {
+export const RoutineFields = ({ control }: RoutineFieldsProps) => {
+  const isRoutine = useWatch({ control, name: "isRoutine" });
+  const routineName = useWatch({ control, name: "routine.name" }) || "";
+  const routineNameLength = routineName.length;
   const MAX_CHARACTERS = 100;
   return (
     <>

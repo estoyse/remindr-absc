@@ -1,16 +1,14 @@
-import { Controller, type Control } from "react-hook-form";
+import { Controller, type Control, useWatch } from "react-hook-form";
 import { Field, InputGroup, Span, Textarea } from "@chakra-ui/react";
 import { type TaskFormValues } from "../../../types";
 
 interface TaskContextFieldProps {
   control: Control<TaskFormValues>;
-  taskContextLength: number;
 }
 
-export const TaskContextField = ({
-  control,
-  taskContextLength,
-}: TaskContextFieldProps) => {
+export const TaskContextField = ({ control }: TaskContextFieldProps) => {
+  const taskContext = useWatch({ control, name: "taskContext" }) || "";
+  const taskContextLength = taskContext.length;
   const MAX_CHARACTERS = 100;
   return (
     <Field.Root>

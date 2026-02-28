@@ -44,9 +44,6 @@ const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
   });
 
   const attachToGroup = useWatch({ control, name: "attachToGroup" });
-  const isRoutine = useWatch({ control, name: "isRoutine" });
-  const taskContext = useWatch({ control, name: "taskContext" }) || "";
-  const routineName = useWatch({ control, name: "routine.name" }) || "";
 
   const onSubmit = async (data: TaskFormValues) => {
     const finalData = { ...data };
@@ -90,16 +87,9 @@ const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
   return (
     <Tabs.Content value='task'>
       <Stack gap='4' as='form' onSubmit={handleSubmit(onSubmit)}>
-        <TaskContextField
-          control={control}
-          taskContextLength={taskContext.length}
-        />
+        <TaskContextField control={control} />
 
-        <RoutineFields
-          control={control}
-          isRoutine={isRoutine}
-          routineNameLength={routineName.length}
-        />
+        <RoutineFields control={control} />
 
         <Stack gap='4' pt='2'>
           {attachToGroup ? (
