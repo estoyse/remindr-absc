@@ -115,7 +115,7 @@ export const TaskApi = {
       ...data,
       id: crypto.randomUUID(),
       createdAt: new Date().toISOString(),
-      files: data.files.map(f => `uploads/${f.name}`),
+      files: data.files?.map(f => `uploads/${f.name}`) || [],
     };
 
     const existingTasksJson = localStorage.getItem("remindr_tasks");
