@@ -136,6 +136,18 @@ export const TaskApi = {
   getAllPerformers: async (): Promise<Performer[]> => {
     return [...MOCK_USERS, ...MOCK_TEAMS];
   },
+
+  deleteTask: async (id: string): Promise<{ success: boolean }> => {
+    await sleep(500);
+    const existingTasksJson = localStorage.getItem("remindr_tasks");
+    if (!existingTasksJson) return { success: false };
+
+    const tasks: StoredTask[] = JSON.parse(existingTasksJson);
+    const filteredTasks = tasks.filter(t => t.id !== id);
+    localStorage.setItem("remindr_tasks", JSON.stringify(filteredTasks));
+
+    return { success: true };
+  },
 };
 
 async function sleep(ms: number) {
