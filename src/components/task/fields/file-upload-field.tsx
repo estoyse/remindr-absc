@@ -1,15 +1,17 @@
-import { Controller, type Control } from "react-hook-form";
+import { Controller, type Control, useFormState } from "react-hook-form";
 import { Button, Field, FileUpload } from "@chakra-ui/react";
 import { HiUpload } from "react-icons/hi";
-import { type TaskFormValues } from "../../../types";
+import type { TaskFormValues } from "@/schemas/task";
 
 interface FileUploadFieldProps {
   control: Control<TaskFormValues>;
 }
 
 export const FileUploadField = ({ control }: FileUploadFieldProps) => {
+  const { errors } = useFormState({ control, name: "files" });
+
   return (
-    <Field.Root>
+    <Field.Root invalid={!!errors.files}>
       <Field.Label>Файлы</Field.Label>
       <Field.RequiredIndicator />
       <Controller
@@ -22,7 +24,7 @@ export const FileUploadField = ({ control }: FileUploadFieldProps) => {
           >
             <FileUpload.HiddenInput />
             <FileUpload.Trigger asChild>
-              <Button variant='outline' w='full'>
+              <Button variant='outline' w='full' colorPalette={errors.files ? "red" : undefined}>
                 <HiUpload /> Прикрепите файлы
               </Button>
             </FileUpload.Trigger>
@@ -30,6 +32,7 @@ export const FileUploadField = ({ control }: FileUploadFieldProps) => {
           </FileUpload.Root>
         )}
       />
+      <Field.ErrorText>{errors.files?.message}</Field.ErrorText>
     </Field.Root>
   );
 };

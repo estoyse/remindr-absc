@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Button, Stack, Tabs } from "@chakra-ui/react";
 import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { type TaskFormValues, type StoredTask } from "../../types";
+import { taskFormSchema, type TaskFormValues } from "../../schemas/task";
+import { type StoredTask } from "../../types";
 import { TaskApi } from "../../api/api";
 import { toaster } from "../../components/ui/toaster";
-
 import { TaskContextField } from "./fields/task-context-field";
 import { RoutineFields } from "./fields/routine-fields";
 import { GroupSelect } from "./fields/group-select";
@@ -24,13 +25,14 @@ const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { control, handleSubmit, reset } = useForm<TaskFormValues>({
+    resolver: zodResolver(taskFormSchema),
     defaultValues: {
       taskContext: "",
       attachToGroup: false,
       isRoutine: false,
       routine: {
         name: "",
-        period: [],
+        period: "",
         description: "",
       },
       person: [],
@@ -46,24 +48,22 @@ const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
   const attachToGroup = useWatch({ control, name: "attachToGroup" });
 
   const onSubmit = async (data: TaskFormValues) => {
-    const finalData = { ...data };
-    if (!finalData.isRoutine) {
-      finalData.routine = { name: "", period: [], description: "" };
-    }
+    const finalData = {
+      ...data,
+      routine: data.isRoutine
+        ? data.routine
+        : { name: "", period: "", description: "" },
+    };
 
     setIsSubmitting(true);
     try {
       const result = await TaskApi.submitTask(finalData);
       if (result.success) {
-        // Optimistically update the cache for immediate feedback
         queryClient.setQueryData<StoredTask[]>(["tasks"], old => {
           const tasks = old || [];
           return [...tasks, result.task];
         });
-
-        // Also invalidate to be safe and sync with server/storage
         await queryClient.invalidateQueries({ queryKey: ["tasks"] });
-
         toaster.create({
           title: "Task created",
           description: "Your task has been successfully added to the list.",
@@ -88,23 +88,18 @@ const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
     <Tabs.Content value='task'>
       <Stack gap='4' as='form' onSubmit={handleSubmit(onSubmit)}>
         <TaskContextField control={control} />
-
         <RoutineFields control={control} />
-
         <Stack gap='4' pt='2'>
           {attachToGroup ? (
             <GroupSelect control={control} />
           ) : (
             <PersonSelect control={control} />
           )}
-
           <SubjectSelect control={control} />
           <TagsSelect control={control} />
         </Stack>
-
         <DeadlineFields control={control} />
         <FileUploadField control={control} />
-
         <Button type='submit' loading={isSubmitting} loadingText='Creating...'>
           Создать задачу
         </Button>

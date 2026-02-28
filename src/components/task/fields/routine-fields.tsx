@@ -1,4 +1,9 @@
-import { Controller, type Control, useWatch } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  useWatch,
+  useFormState,
+} from "react-hook-form";
 import {
   Checkbox,
   Collapsible,
@@ -16,8 +21,8 @@ import {
 } from "@chakra-ui/react";
 import { LuInfo } from "react-icons/lu";
 import { periodCollection } from "../../../data/mock-data";
-import { type TaskFormValues } from "../../../types";
 import { Tooltip } from "@/components/ui/tooltip";
+import type { TaskFormValues } from "@/schemas/task";
 
 interface RoutineFieldsProps {
   control: Control<TaskFormValues>;
@@ -28,6 +33,12 @@ export const RoutineFields = ({ control }: RoutineFieldsProps) => {
   const routineName = useWatch({ control, name: "routine.name" }) || "";
   const routineNameLength = routineName.length;
   const MAX_CHARACTERS = 100;
+
+  const { errors } = useFormState({
+    control,
+    name: "routine",
+  });
+
   return (
     <>
       <Flex direction='row' justify='space-between'>
@@ -80,7 +91,7 @@ export const RoutineFields = ({ control }: RoutineFieldsProps) => {
             padding='2'
             rounded='md'
           >
-            <Field.Root>
+            <Field.Root invalid={!!errors.routine?.name}>
               <Field.Label>Название рутинной задачи</Field.Label>
               <Field.RequiredIndicator />
               <InputGroup
@@ -110,8 +121,10 @@ export const RoutineFields = ({ control }: RoutineFieldsProps) => {
                   )}
                 />
               </InputGroup>
+              <Field.ErrorText>{errors.routine?.name?.message}</Field.ErrorText>
             </Field.Root>
-            <Field.Root>
+
+            <Field.Root invalid={!!errors.routine?.period}>
               <Field.Label>Периодичность</Field.Label>
               <Field.RequiredIndicator />
               <Controller
@@ -120,8 +133,8 @@ export const RoutineFields = ({ control }: RoutineFieldsProps) => {
                 render={({ field }) => (
                   <Select.Root
                     collection={periodCollection}
-                    value={field.value}
-                    onValueChange={e => field.onChange(e.value)}
+                    value={[field.value as string]}
+                    onValueChange={e => field.onChange(e.value[0])}
                   >
                     <Select.HiddenSelect />
                     <Select.Control>
@@ -147,8 +160,12 @@ export const RoutineFields = ({ control }: RoutineFieldsProps) => {
                   </Select.Root>
                 )}
               />
+              <Field.ErrorText>
+                {errors.routine?.period?.message}
+              </Field.ErrorText>
             </Field.Root>
-            <Field.Root>
+
+            <Field.Root invalid={!!errors.routine?.description}>
               <Field.Label>Описание</Field.Label>
               <Field.RequiredIndicator />
               <Controller
@@ -165,6 +182,9 @@ export const RoutineFields = ({ control }: RoutineFieldsProps) => {
                   />
                 )}
               />
+              <Field.ErrorText>
+                {errors.routine?.description?.message}
+              </Field.ErrorText>
             </Field.Root>
           </Stack>
         </Collapsible.Content>

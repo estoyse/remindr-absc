@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Avatar, Combobox, Field, Portal } from "@chakra-ui/react";
-import { Controller, type Control } from "react-hook-form";
+import { Controller, useFormState, type Control } from "react-hook-form";
 import { ComboboxMultiSelectValue } from "../../ui/multi-select-value";
-import { type SelectItem, type TaskFormValues } from "../../../types";
 import { usePerformers } from "../../../hooks/use-performers";
+import type { TaskFormValues } from "@/schemas/task";
+import type { SelectItem } from "@/types";
 
 interface GroupSelectProps {
   control: Control<TaskFormValues>;
@@ -15,9 +16,10 @@ export const GroupSelect = ({ control }: GroupSelectProps) => {
     search: groupSearch,
     isTeamMode: true,
   });
+  const { errors } = useFormState({ control, name: "group" });
 
   return (
-    <Field.Root key='group-select'>
+    <Field.Root key='group-select' invalid={!!errors.group}>
       <Field.Label>Команда</Field.Label>
       <Field.RequiredIndicator />
       <Controller
@@ -78,6 +80,7 @@ export const GroupSelect = ({ control }: GroupSelectProps) => {
           </Combobox.Root>
         )}
       />
+      <Field.ErrorText>{errors.group?.message}</Field.ErrorText>
     </Field.Root>
   );
 };

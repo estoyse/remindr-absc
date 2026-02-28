@@ -1,6 +1,11 @@
-import { Controller, type Control, useWatch } from "react-hook-form";
+import {
+  Controller,
+  type Control,
+  useWatch,
+  useFormState,
+} from "react-hook-form";
 import { Field, InputGroup, Span, Textarea } from "@chakra-ui/react";
-import { type TaskFormValues } from "../../../types";
+import type { TaskFormValues } from "@/schemas/task";
 
 interface TaskContextFieldProps {
   control: Control<TaskFormValues>;
@@ -10,8 +15,11 @@ export const TaskContextField = ({ control }: TaskContextFieldProps) => {
   const taskContext = useWatch({ control, name: "taskContext" }) || "";
   const taskContextLength = taskContext.length;
   const MAX_CHARACTERS = 100;
+
+  const { errors } = useFormState({ control, name: "taskContext" });
+
   return (
-    <Field.Root>
+    <Field.Root invalid={!!errors.taskContext}>
       <Field.Label>Контекст задачи</Field.Label>
       <Field.RequiredIndicator />
       <InputGroup
@@ -25,17 +33,22 @@ export const TaskContextField = ({ control }: TaskContextFieldProps) => {
           name='taskContext'
           control={control}
           render={({ field }) => (
-            <Textarea
-              {...field}
-              placeholder='Выполнить какую-нибудь задачу task'
-              maxLength={MAX_CHARACTERS}
-              onChange={e => {
-                field.onChange(e.currentTarget.value.slice(0, MAX_CHARACTERS));
-              }}
-            />
+            <>
+              <Textarea
+                {...field}
+                placeholder='Выполнить какую-нибудь задачу task'
+                maxLength={MAX_CHARACTERS}
+                onChange={e => {
+                  field.onChange(
+                    e.currentTarget.value.slice(0, MAX_CHARACTERS)
+                  );
+                }}
+              />
+            </>
           )}
         />
       </InputGroup>
+      <Field.ErrorText>{errors.taskContext?.message}</Field.ErrorText>
     </Field.Root>
   );
 };

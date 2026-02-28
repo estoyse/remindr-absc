@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Avatar, Combobox, Field, Portal } from "@chakra-ui/react";
-import { Controller, type Control } from "react-hook-form";
+import { Controller, useFormState, type Control } from "react-hook-form";
 import { ComboboxMultiSelectValue } from "../../ui/multi-select-value";
-import { type SelectItem, type TaskFormValues } from "../../../types";
+import { type SelectItem } from "../../../types";
 import { usePerformers } from "../../../hooks/use-performers";
+import type { TaskFormValues } from "@/schemas/task";
 
 interface PersonSelectProps {
   control: Control<TaskFormValues>;
@@ -16,8 +17,9 @@ export const PersonSelect = ({ control }: PersonSelectProps) => {
     isTeamMode: false,
   });
 
+  const { errors } = useFormState({ control, name: "person" });
   return (
-    <Field.Root key='person-select'>
+    <Field.Root key='person-select' invalid={!!errors.person}>
       <Field.Label>Исполнители задачи</Field.Label>
       <Field.RequiredIndicator />
       <Controller
@@ -77,6 +79,7 @@ export const PersonSelect = ({ control }: PersonSelectProps) => {
           </Combobox.Root>
         )}
       />
+      <Field.ErrorText>{errors.person?.message}</Field.ErrorText>
     </Field.Root>
   );
 };

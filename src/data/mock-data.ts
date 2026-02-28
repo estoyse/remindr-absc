@@ -12,14 +12,14 @@ export const frameworks = createListCollection<SelectItem>({
 
 export const subjects = createListCollection<SelectItem>({
   items: [
-    { label: "Meeting / Совещание", value: "meeting" },
-    { label: "Development / Разработка", value: "development" },
-    { label: "Research / Исследование", value: "research" },
-    { label: "Planning / Планирование", value: "planning" },
-    { label: "Administrative / Администрирование", value: "admin" },
-    { label: "Reporting / Отчетность", value: "reporting" },
-    { label: "Support / Поддержка", value: "support" },
-    { label: "Urgent / Срочно", value: "urgent" },
+    { label: "Совещание", value: "meeting" },
+    { label: "Разработка", value: "development" },
+    { label: "Исследование", value: "research" },
+    { label: "Планирование", value: "planning" },
+    { label: "Администрирование", value: "admin" },
+    { label: "Отчетность", value: "reporting" },
+    { label: "Поддержка", value: "support" },
+    { label: "Срочно", value: "urgent" },
   ],
 });
 

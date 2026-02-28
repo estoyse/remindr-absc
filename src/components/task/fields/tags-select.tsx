@@ -1,16 +1,18 @@
-import { Controller, type Control } from "react-hook-form";
+import { Controller, type Control, useFormState } from "react-hook-form";
 import { Field, Portal, Select } from "@chakra-ui/react";
 import { tagsCollection } from "../../../data/mock-data";
 import { MultiSelectValue } from "../../ui/multi-select-value";
-import { type TaskFormValues } from "../../../types";
+import type { TaskFormValues } from "@/schemas/task";
 
 interface TagsSelectProps {
   control: Control<TaskFormValues>;
 }
 
 export const TagsSelect = ({ control }: TagsSelectProps) => {
+  const { errors } = useFormState({ control, name: "tags" });
+
   return (
-    <Field.Root>
+    <Field.Root invalid={!!errors.tags}>
       <Field.Label>Теги</Field.Label>
       <Field.RequiredIndicator />
       <Controller
@@ -47,6 +49,7 @@ export const TagsSelect = ({ control }: TagsSelectProps) => {
           </Select.Root>
         )}
       />
+      <Field.ErrorText>{errors.tags?.message}</Field.ErrorText>
     </Field.Root>
   );
 };

@@ -12,6 +12,7 @@
   "dependencies": {
     "@chakra-ui/react": "^3.33.0",
     "@emotion/react": "^11.14.0",
+    "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.21",
     "next-themes": "^0.4.6",
     "react": "^19.2.0",
@@ -19,7 +20,8 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.2",
     "react-icons": "^5.5.0",
-    "simple-chakra-ui-datepicker": "^1.1.0"
+    "simple-chakra-ui-datepicker": "^1.1.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

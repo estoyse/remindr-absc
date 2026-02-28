@@ -1,4 +1,7 @@
 import { type ListCollection } from "@chakra-ui/react";
+import { type TaskFormValues as SchemaTaskFormValues } from "@/schemas/task";
+
+export type TaskFormValues = SchemaTaskFormValues;
 
 export interface SelectItem {
   label: string;
@@ -9,24 +12,6 @@ export interface SelectItem {
 
 export interface TaskTabContentProps {
   userCollection: ListCollection<SelectItem>;
-}
-
-export interface TaskFormValues {
-  taskContext: string;
-  attachToGroup: boolean;
-  isRoutine: boolean;
-  routine: {
-    name: string;
-    period: string[];
-    description: string;
-  };
-  person: string[];
-  group: string[];
-  subject: string[];
-  tags: string[];
-  deadlineDate: string;
-  deadlineTime: string;
-  files: File[];
 }
 
 export interface StoredTask extends Omit<TaskFormValues, "files"> {
