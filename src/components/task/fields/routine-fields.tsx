@@ -120,7 +120,7 @@ export const RoutineFields = ({ control }: RoutineFieldsProps) => {
                 render={({ field }) => (
                   <Select.Root
                     collection={periodCollection}
-                    value={field.value as string[]}
+                    value={field.value}
                     onValueChange={e => field.onChange(e.value)}
                   >
                     <Select.HiddenSelect />
