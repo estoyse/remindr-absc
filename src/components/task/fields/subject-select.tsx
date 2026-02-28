@@ -10,7 +10,7 @@ interface SubjectSelectProps {
 export const SubjectSelect = ({ control }: SubjectSelectProps) => {
   return (
     <Field.Root>
-      <Field.Label>Subject</Field.Label>
+      <Field.Label>Указать тему</Field.Label>
       <Field.RequiredIndicator />
       <Controller
         name='subject'
@@ -25,7 +25,7 @@ export const SubjectSelect = ({ control }: SubjectSelectProps) => {
             <Select.HiddenSelect />
             <Select.Control>
               <Select.Trigger>
-                <Select.ValueText placeholder='Select subject' />
+                <Select.ValueText placeholder='Выберите тему' />
               </Select.Trigger>
               <Select.IndicatorGroup>
                 <Select.Indicator />

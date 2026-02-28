@@ -45,7 +45,7 @@ export const RoutineFields = ({
               <Switch.Control>
                 <Switch.Thumb />
               </Switch.Control>
-              <Switch.Label>Attach to the group</Switch.Label>
+              <Switch.Label>Назначить на команду</Switch.Label>
             </Switch.Root>
           )}
         />
@@ -60,7 +60,7 @@ export const RoutineFields = ({
               >
                 <Checkbox.HiddenInput />
                 <Checkbox.Control />
-                <Checkbox.Label>Routine Task</Checkbox.Label>
+                <Checkbox.Label>Рутинная задача</Checkbox.Label>
               </Checkbox.Root>
             )}
           />
@@ -78,7 +78,7 @@ export const RoutineFields = ({
             rounded='md'
           >
             <Field.Root>
-              <Field.Label>Name</Field.Label>
+              <Field.Label>Название рутинной задачи</Field.Label>
               <Field.RequiredIndicator />
               <InputGroup
                 endElement={
@@ -96,7 +96,7 @@ export const RoutineFields = ({
                       value={field.value as string}
                       onBlur={field.onBlur}
                       ref={field.ref}
-                      placeholder='Routine name'
+                      placeholder='Укажите название рутинной задачи'
                       maxLength={MAX_CHARACTERS}
                       onChange={e => {
                         field.onChange(
@@ -109,7 +109,7 @@ export const RoutineFields = ({
               </InputGroup>
             </Field.Root>
             <Field.Root>
-              <Field.Label>Period</Field.Label>
+              <Field.Label>Периодичность</Field.Label>
               <Field.RequiredIndicator />
               <Controller
                 name='routine.period'
@@ -123,7 +123,7 @@ export const RoutineFields = ({
                     <Select.HiddenSelect />
                     <Select.Control>
                       <Select.Trigger>
-                        <Select.ValueText placeholder='Select period' />
+                        <Select.ValueText placeholder='Выберите периодичность' />
                       </Select.Trigger>
                       <Select.IndicatorGroup>
                         <Select.Indicator />
@@ -146,7 +146,7 @@ export const RoutineFields = ({
               />
             </Field.Root>
             <Field.Root>
-              <Field.Label>Description</Field.Label>
+              <Field.Label>Описание</Field.Label>
               <Field.RequiredIndicator />
               <Controller
                 name='routine.description'
@@ -158,6 +158,7 @@ export const RoutineFields = ({
                     onChange={field.onChange}
                     onBlur={field.onBlur}
                     ref={field.ref}
+                    placeholder='Описание рутинной задачи'
                   />
                 )}
               />

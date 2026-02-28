@@ -11,7 +11,7 @@ interface TagsSelectProps {
 export const TagsSelect = ({ control }: TagsSelectProps) => {
   return (
     <Field.Root>
-      <Field.Label>Tags</Field.Label>
+      <Field.Label>Теги</Field.Label>
       <Field.RequiredIndicator />
       <Controller
         name='tags'
@@ -26,7 +26,7 @@ export const TagsSelect = ({ control }: TagsSelectProps) => {
             <Select.HiddenSelect />
             <Select.Control>
               <Select.Trigger>
-                <MultiSelectValue placeholder='Select tags' />
+                <MultiSelectValue placeholder='Укажите соответствующие теги' />
               </Select.Trigger>
               <Select.IndicatorGroup>
                 <Select.Indicator />

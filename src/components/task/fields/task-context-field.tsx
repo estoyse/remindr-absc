@@ -14,7 +14,7 @@ export const TaskContextField = ({
   const MAX_CHARACTERS = 100;
   return (
     <Field.Root>
-      <Field.Label>Task Context</Field.Label>
+      <Field.Label>Контекст задачи</Field.Label>
       <Field.RequiredIndicator />
       <InputGroup
         endElement={
@@ -29,7 +29,7 @@ export const TaskContextField = ({
           render={({ field }) => (
             <Textarea
               {...field}
-              placeholder='Write about task'
+              placeholder='Выполнить какую-нибудь задачу task'
               maxLength={MAX_CHARACTERS}
               onChange={e => {
                 field.onChange(e.currentTarget.value.slice(0, MAX_CHARACTERS));

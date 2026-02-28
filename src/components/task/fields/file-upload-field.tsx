@@ -10,7 +10,7 @@ interface FileUploadFieldProps {
 export const FileUploadField = ({ control }: FileUploadFieldProps) => {
   return (
     <Field.Root>
-      <Field.Label>File</Field.Label>
+      <Field.Label>Файлы</Field.Label>
       <Field.RequiredIndicator />
       <Controller
         name='files'
@@ -23,7 +23,7 @@ export const FileUploadField = ({ control }: FileUploadFieldProps) => {
             <FileUpload.HiddenInput />
             <FileUpload.Trigger asChild>
               <Button variant='outline' w='full'>
-                <HiUpload /> Upload file
+                <HiUpload /> Прикрепите файлы
               </Button>
             </FileUpload.Trigger>
             <FileUpload.List />

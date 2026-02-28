@@ -9,7 +9,7 @@ interface DeadlineFieldsProps {
 export const DeadlineFields = ({ control }: DeadlineFieldsProps) => {
   return (
     <Field.Root>
-      <Field.Label>Deadline</Field.Label>
+      <Field.Label>Срок выполнения</Field.Label>
       <Field.RequiredIndicator />
       <Stack direction='row' w='full'>
         <Controller

@@ -18,7 +18,7 @@ export const PersonSelect = ({ control }: PersonSelectProps) => {
 
   return (
     <Field.Root key='person-select'>
-      <Field.Label>Person</Field.Label>
+      <Field.Label>Исполнители задачи</Field.Label>
       <Field.RequiredIndicator />
       <Controller
         name='person'
@@ -37,7 +37,7 @@ export const PersonSelect = ({ control }: PersonSelectProps) => {
             positioning={{ placement: "top", flip: false }}
           >
             <Combobox.Control>
-              <Combobox.Input placeholder='Select person' />
+              <Combobox.Input placeholder='Укажите исполнителей задачи' />
               <Combobox.Trigger>
                 <ComboboxMultiSelectValue showAvatar={true} />
               </Combobox.Trigger>
@@ -62,13 +62,13 @@ export const PersonSelect = ({ control }: PersonSelectProps) => {
                   {isLoading && (
                     <Combobox.Item
                       item={{
-                        label: "Loading...",
+                        label: "Загрузка...",
                         value: "loading",
                       }}
                     >
                       {collection.items.length > 0
-                        ? "Updating..."
-                        : "Loading..."}
+                        ? "Обновление..."
+                        : "Загрузка..."}
                     </Combobox.Item>
                   )}
                 </Combobox.Content>

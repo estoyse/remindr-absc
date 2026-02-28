@@ -116,7 +116,7 @@ const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
         <FileUploadField control={control} />
 
         <Button type='submit' loading={isSubmitting} loadingText='Creating...'>
-          Create task
+          Создать задачу
         </Button>
       </Stack>
     </Tabs.Content>

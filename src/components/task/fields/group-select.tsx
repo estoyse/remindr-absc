@@ -18,7 +18,7 @@ export const GroupSelect = ({ control }: GroupSelectProps) => {
 
   return (
     <Field.Root key='group-select'>
-      <Field.Label>Group</Field.Label>
+      <Field.Label>Команда</Field.Label>
       <Field.RequiredIndicator />
       <Controller
         name='group'
@@ -38,7 +38,7 @@ export const GroupSelect = ({ control }: GroupSelectProps) => {
             positioning={{ placement: "top", flip: false }}
           >
             <Combobox.Control>
-              <Combobox.Input placeholder='Select group' />
+              <Combobox.Input placeholder='Выберите команду' />
               <Combobox.Trigger>
                 <ComboboxMultiSelectValue showAvatar={true} />
               </Combobox.Trigger>
@@ -63,13 +63,13 @@ export const GroupSelect = ({ control }: GroupSelectProps) => {
                   {isLoading && (
                     <Combobox.Item
                       item={{
-                        label: "Loading...",
+                        label: "Загрузка...",
                         value: "loading",
                       }}
                     >
                       {collection.items.length > 0
-                        ? "Updating..."
-                        : "Loading..."}
+                        ? "Обновление..."
+                        : "Загрузка..."}
                     </Combobox.Item>
                   )}
                 </Combobox.Content>

@@ -47,7 +47,7 @@ export const TaskList = () => {
 
   if (tasksLoading) return <Text>Loading tasks...</Text>;
   if (!tasks || tasks.length === 0)
-    return <Text color='fg.muted'>No tasks created yet.</Text>;
+    return <Text color='fg.muted'>Нет созданных задач.</Text>;
 
   return (
     <Stack gap='6' w='full'>
