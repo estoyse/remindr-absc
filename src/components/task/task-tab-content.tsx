@@ -1,7 +1,6 @@
 import { Button, Stack, Tabs } from "@chakra-ui/react";
 import { useForm, useWatch } from "react-hook-form";
-import { groupCollection } from "../../data/mock-data";
-import { type TaskFormValues, type TaskTabContentProps } from "../../types";
+import { type TaskFormValues } from "../../types";
 
 import { TaskContextField } from "./fields/task-context-field";
 import { RoutineFields } from "./fields/routine-fields";
@@ -12,7 +11,7 @@ import { TagsSelect } from "./fields/tags-select";
 import { DeadlineFields } from "./fields/deadline-fields";
 import { FileUploadField } from "./fields/file-upload-field";
 
-export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
+export const TaskTabContent = () => {
   const { control, handleSubmit } = useForm<TaskFormValues>({
     defaultValues: {
       taskContext: "",
@@ -62,9 +61,9 @@ export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
 
         <Stack gap='4' pt='2'>
           {attachToGroup ? (
-            <GroupSelect control={control} groupCollection={groupCollection} />
+            <GroupSelect control={control} />
           ) : (
-            <PersonSelect control={control} userCollection={userCollection} />
+            <PersonSelect control={control} />
           )}
 
           <SubjectSelect control={control} />

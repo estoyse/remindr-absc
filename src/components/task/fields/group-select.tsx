@@ -1,28 +1,20 @@
-import { useState, useMemo } from "react";
-import {
-  Combobox,
-  Field,
-  Portal,
-  createListCollection,
-} from "@chakra-ui/react";
+import { useState } from "react";
+import { Avatar, Combobox, Field, Portal } from "@chakra-ui/react";
 import { Controller, type Control } from "react-hook-form";
 import { ComboboxMultiSelectValue } from "../../ui/multi-select-value";
 import { type SelectItem, type TaskFormValues } from "../../../types";
+import { usePerformers } from "../../../hooks/use-performers";
 
 interface GroupSelectProps {
   control: Control<TaskFormValues>;
-  groupCollection: ReturnType<typeof createListCollection<SelectItem>>;
 }
 
-export const GroupSelect = ({ control, groupCollection }: GroupSelectProps) => {
+export const GroupSelect = ({ control }: GroupSelectProps) => {
   const [groupSearch, setGroupSearch] = useState("");
-
-  const filteredGroupItems = useMemo(() => {
-    if (!groupSearch) return groupCollection.items;
-    return groupCollection.items.filter(item =>
-      item.label.toLowerCase().includes(groupSearch.toLowerCase())
-    );
-  }, [groupSearch, groupCollection.items]);
+  const { collection, isLoading } = usePerformers({
+    search: groupSearch,
+    isTeamMode: true,
+  });
 
   return (
     <Field.Root key='group-select'>
@@ -34,7 +26,7 @@ export const GroupSelect = ({ control, groupCollection }: GroupSelectProps) => {
         render={({ field }) => (
           <Combobox.Root
             multiple
-            collection={groupCollection}
+            collection={collection}
             value={field.value}
             onValueChange={e => field.onChange(e.value)}
             inputValue={groupSearch}
@@ -43,26 +35,43 @@ export const GroupSelect = ({ control, groupCollection }: GroupSelectProps) => {
               if (!e.open) setGroupSearch("");
             }}
             closeOnSelect
+            positioning={{ placement: "top", flip: false }}
           >
             <Combobox.Control>
               <Combobox.Input placeholder='Select group' />
               <Combobox.Trigger>
-                <ComboboxMultiSelectValue showAvatar={false} />
+                <ComboboxMultiSelectValue showAvatar={true} />
               </Combobox.Trigger>
             </Combobox.Control>
             <Portal>
               <Combobox.Positioner>
                 <Combobox.Content>
-                  {filteredGroupItems.map((item: SelectItem) => (
+                  {collection.items.map((item: SelectItem) => (
                     <Combobox.Item
                       item={item}
                       key={item.value}
                       justifyContent='flex-start'
                     >
+                      <Avatar.Root shape='rounded' size='2xs'>
+                        <Avatar.Image src={item.avatar} alt={item.label} />
+                        <Avatar.Fallback name={item.label} />
+                      </Avatar.Root>
                       {item.label}
                       <Combobox.ItemIndicator />
                     </Combobox.Item>
                   ))}
+                  {isLoading && (
+                    <Combobox.Item
+                      item={{
+                        label: "Loading...",
+                        value: "loading",
+                      }}
+                    >
+                      {collection.items.length > 0
+                        ? "Updating..."
+                        : "Loading..."}
+                    </Combobox.Item>
+                  )}
                 </Combobox.Content>
               </Combobox.Positioner>
             </Portal>

@@ -38,7 +38,7 @@ export const MultiSelectValue = ({
           colorPalette={item.colorPalette || "gray"}
         >
           <HStack gap='2'>
-            {showAvatar && item.avatar && (
+            {showAvatar && (
               <Avatar.Root size='2xs'>
                 <Avatar.Image src={item.avatar} alt={item.label} />
                 <Avatar.Fallback name={item.label} />
@@ -87,7 +87,7 @@ export const ComboboxMultiSelectValue = ({
           colorPalette={item.colorPalette || "gray"}
         >
           <HStack gap='2'>
-            {showAvatar && item.avatar && (
+            {showAvatar && (
               <Avatar.Root size='2xs'>
                 <Avatar.Image src={item.avatar} alt={item.label} />
                 <Avatar.Fallback name={item.label} />
