@@ -1,35 +1,77 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  Button,
+  createListCollection,
+  Dialog,
+  Icon,
+  Portal,
+  Stack,
+  Tabs,
+} from "@chakra-ui/react";
+import { useEffect, useMemo, useState } from "react";
+import { LuFolder, LuUser, LuX } from "react-icons/lu";
+import { ReminderTabContent } from "./components/task/reminder-tab-content";
+import { TaskTabContent } from "./components/task/task-tab-content";
+import { type SelectItem } from "./data/types";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [users, setUsers] = useState<{ id: number; name: string }[]>([]);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then(res => res.json())
+      .then(data => setUsers(data));
+  }, []);
+
+  const userCollection = useMemo(() => {
+    return createListCollection<SelectItem>({
+      items: users.map(user => ({
+        label: user.name,
+        value: user.id.toString(),
+        avatar: `https://i.pravatar.cc/100?u=${user.id}`,
+      })),
+    });
+  }, [users]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Dialog.Root>
+      <Dialog.Trigger asChild>
+        <Button variant='outline'>Open</Button>
+      </Dialog.Trigger>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content>
+            <Dialog.CloseTrigger>
+              <Icon as={LuX} size='lg' />
+            </Dialog.CloseTrigger>
+            <Dialog.Header>
+              <Dialog.Title>Create task</Dialog.Title>
+            </Dialog.Header>
+            <Dialog.Body pb='4'>
+              <Stack gap='4'>
+                <Tabs.Root defaultValue='task' variant='plain' fitted>
+                  <Tabs.List bg='bg.muted'>
+                    <Tabs.Trigger value='task'>
+                      <LuUser />
+                      Create task
+                    </Tabs.Trigger>
+                    <Tabs.Trigger value='reminder'>
+                      <LuFolder />
+                      Create reminder
+                    </Tabs.Trigger>
+                    <Tabs.Indicator />
+                  </Tabs.List>
+
+                  <TaskTabContent userCollection={userCollection} />
+                  <ReminderTabContent />
+                </Tabs.Root>
+              </Stack>
+            </Dialog.Body>
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
+  );
 }
 
-export default App
+export default App;
