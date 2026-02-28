@@ -17,6 +17,7 @@ import {
 import { LuInfo } from "react-icons/lu";
 import { periodCollection } from "../../../data/mock-data";
 import { type TaskFormValues } from "../../../types";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface RoutineFieldsProps {
   control: Control<TaskFormValues>;
@@ -64,7 +65,12 @@ export const RoutineFields = ({
               </Checkbox.Root>
             )}
           />
-          <Icon as={LuInfo} size='md' />
+          <Tooltip
+            content='Рутинная задача будет создаваться автоматически в соответствии с указанным периодом'
+            contentProps={{ fontSize: "md" }}
+          >
+            <Icon as={LuInfo} size='md' />
+          </Tooltip>
         </Stack>
       </Flex>
 
