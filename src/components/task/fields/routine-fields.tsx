@@ -15,7 +15,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { LuInfo } from "react-icons/lu";
-import { frameworks } from "../../../data/mock-data";
+import { periodCollection } from "../../../data/mock-data";
 import { type TaskFormValues } from "../../../types";
 
 interface RoutineFieldsProps {
@@ -88,11 +88,14 @@ export const RoutineFields = ({
                 }
               >
                 <Controller
-                  name='routineName'
+                  name='routine.name'
                   control={control}
                   render={({ field }) => (
                     <Input
-                      {...field}
+                      name={field.name}
+                      value={field.value as string}
+                      onBlur={field.onBlur}
+                      ref={field.ref}
                       placeholder='Enter your message'
                       maxLength={MAX_CHARACTERS}
                       onChange={e => {
@@ -109,12 +112,12 @@ export const RoutineFields = ({
               <Field.Label>Period</Field.Label>
               <Field.RequiredIndicator />
               <Controller
-                name='period'
+                name='routine.period'
                 control={control}
                 render={({ field }) => (
                   <Select.Root
-                    collection={frameworks}
-                    value={field.value}
+                    collection={periodCollection}
+                    value={field.value as string[]}
                     onValueChange={e => field.onChange(e.value)}
                   >
                     <Select.HiddenSelect />
@@ -129,9 +132,9 @@ export const RoutineFields = ({
                     <Portal>
                       <Select.Positioner>
                         <Select.Content>
-                          {frameworks.items.map(framework => (
-                            <Select.Item item={framework} key={framework.value}>
-                              {framework.label}
+                          {periodCollection.items.map(p => (
+                            <Select.Item item={p} key={p.value}>
+                              {p.label}
                               <Select.ItemIndicator />
                             </Select.Item>
                           ))}
@@ -146,9 +149,17 @@ export const RoutineFields = ({
               <Field.Label>Description</Field.Label>
               <Field.RequiredIndicator />
               <Controller
-                name='routineDescription'
+                name='routine.description'
                 control={control}
-                render={({ field }) => <Textarea {...field} />}
+                render={({ field }) => (
+                  <Textarea
+                    name={field.name}
+                    value={field.value as string}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    ref={field.ref}
+                  />
+                )}
               />
             </Field.Root>
           </Stack>

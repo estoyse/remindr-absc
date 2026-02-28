@@ -15,9 +15,11 @@ export interface TaskFormValues {
   taskContext: string;
   attachToGroup: boolean;
   isRoutine: boolean;
-  routineName: string;
-  period: string[];
-  routineDescription: string;
+  routine: {
+    name: string;
+    period: string[];
+    description: string;
+  };
   person: string[];
   group: string[];
   subject: string[];

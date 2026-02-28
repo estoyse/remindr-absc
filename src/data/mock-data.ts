@@ -31,3 +31,13 @@ export const groupCollection = createListCollection<SelectItem>({
     { label: "HR", value: "hr", colorPalette: "red" },
   ],
 });
+
+export const periodCollection = createListCollection<SelectItem>({
+  items: [
+    { label: "Hourly", value: "hourly" },
+    { label: "Daily", value: "daily" },
+    { label: "Weekly", value: "weekly" },
+    { label: "Monthly", value: "monthly" },
+    { label: "Annually", value: "annually" },
+  ],
+});

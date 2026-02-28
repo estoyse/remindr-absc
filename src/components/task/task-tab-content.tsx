@@ -18,9 +18,11 @@ export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
       taskContext: "",
       attachToGroup: true,
       isRoutine: false,
-      routineName: "",
-      period: [],
-      routineDescription: "",
+      routine: {
+        name: "",
+        period: [],
+        description: "",
+      },
       person: [],
       group: [],
       subject: [],
@@ -34,10 +36,14 @@ export const TaskTabContent = ({ userCollection }: TaskTabContentProps) => {
   const attachToGroup = useWatch({ control, name: "attachToGroup" });
   const isRoutine = useWatch({ control, name: "isRoutine" });
   const taskContext = useWatch({ control, name: "taskContext" }) || "";
-  const routineName = useWatch({ control, name: "routineName" }) || "";
+  const routineName = useWatch({ control, name: "routine.name" }) || "";
 
   const onSubmit = (data: TaskFormValues) => {
-    console.log("Form Data:", data);
+    const finalData = { ...data };
+    if (!finalData.isRoutine) {
+      finalData.routine = { name: "", period: [], description: "" };
+    }
+    console.log("Form Data:", finalData);
   };
 
   return (
