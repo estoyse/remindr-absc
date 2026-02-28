@@ -1,10 +1,14 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Home from "./components/home";
+import { Toaster } from "./components/ui/toaster";
+
 const queryClient = new QueryClient();
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Home />
+      <Toaster />
     </QueryClientProvider>
   );
 }

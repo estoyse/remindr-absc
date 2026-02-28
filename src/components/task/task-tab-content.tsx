@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Button, Stack, Tabs } from "@chakra-ui/react";
 import { useForm, useWatch } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
-import { type TaskFormValues } from "../../types";
+import { type TaskFormValues, type StoredTask } from "../../types";
 import { TaskApi } from "../../api/api";
+import { toaster } from "../../components/ui/toaster";
 
 import { TaskContextField } from "./fields/task-context-field";
 import { RoutineFields } from "./fields/routine-fields";
@@ -13,8 +15,14 @@ import { TagsSelect } from "./fields/tags-select";
 import { DeadlineFields } from "./fields/deadline-fields";
 import { FileUploadField } from "./fields/file-upload-field";
 
-export const TaskTabContent = () => {
+interface TaskTabContentProps {
+  onSuccess?: () => void;
+}
+
+export const TaskTabContent = ({ onSuccess }: TaskTabContentProps) => {
   const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const { control, handleSubmit, reset } = useForm<TaskFormValues>({
     defaultValues: {
       taskContext: "",
@@ -46,16 +54,36 @@ export const TaskTabContent = () => {
       finalData.routine = { name: "", period: [], description: "" };
     }
 
+    setIsSubmitting(true);
     try {
       const result = await TaskApi.submitTask(finalData);
       if (result.success) {
-        queryClient.invalidateQueries({ queryKey: ["tasks"] });
-        alert("Task created successfully!");
+        // Optimistically update the cache for immediate feedback
+        queryClient.setQueryData<StoredTask[]>(["tasks"], old => {
+          const tasks = old || [];
+          return [...tasks, result.task];
+        });
+
+        // Also invalidate to be safe and sync with server/storage
+        await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+
+        toaster.create({
+          title: "Task created",
+          description: "Your task has been successfully added to the list.",
+          type: "success",
+        });
         reset();
+        onSuccess?.();
       }
     } catch (error) {
       console.error("Submission failed:", error);
-      alert("Failed to create task");
+      toaster.create({
+        title: "Error",
+        description: "Failed to create task. Please try again.",
+        type: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -87,7 +115,9 @@ export const TaskTabContent = () => {
         <DeadlineFields control={control} />
         <FileUploadField control={control} />
 
-        <Button type='submit'>Create task</Button>
+        <Button type='submit' loading={isSubmitting} loadingText='Creating...'>
+          Create task
+        </Button>
       </Stack>
     </Tabs.Content>
   );

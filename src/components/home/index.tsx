@@ -16,13 +16,17 @@ import { TaskTabContent } from "../task/task-tab-content";
 import { ReminderTabContent } from "../task/reminder-tab-content";
 import { TaskList } from "./task-list";
 
+import { useState } from "react";
+
 export default function Home() {
+  const [open, setOpen] = useState(false);
+
   return (
     <Container maxW='md' py='8'>
       <Stack gap='8'>
         <HStack justify='space-between' align='center'>
           <Heading size='2xl'>My Tasks</Heading>
-          <Dialog.Root>
+          <Dialog.Root open={open} onOpenChange={e => setOpen(e.open)}>
             <Dialog.Trigger asChild>
               <Button rounded='full' size='lg'>
                 <Icon as={LuPlus} />
@@ -54,7 +58,7 @@ export default function Home() {
                           <Tabs.Indicator />
                         </Tabs.List>
 
-                        <TaskTabContent />
+                        <TaskTabContent onSuccess={() => setOpen(false)} />
                         <ReminderTabContent />
                       </Tabs.Root>
                     </Stack>
